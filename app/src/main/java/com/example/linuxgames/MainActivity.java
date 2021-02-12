@@ -2,24 +2,17 @@ package com.example.linuxgames;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import java.io.IOException;
-import java.util.List;
+import com.example.linuxgames.activities.loadingActivity;
 
 import jp.wasabeef.blurry.Blurry;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,10 +33,9 @@ public class MainActivity extends AppCompatActivity {
         //add listener for enter button
         searchBox.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                Log.i("SEARCH", "onKey: enter key pressed");
-
-                //search wine
-                new searchWine(searchBox.getText().toString()).execute();
+                Intent intent = new Intent(this, loadingActivity.class);
+                intent.putExtra("query", searchBox.getText().toString());
+                startActivity(intent);
             }
             return false;
         });

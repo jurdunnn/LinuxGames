@@ -1,7 +1,12 @@
-package com.example.linuxgames;
+package com.example.linuxgames.wine;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
@@ -11,13 +16,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class searchWine extends AsyncTask<String, String, String> {
+public class wineResultsCount extends AsyncTask<String, String, String> {
     final String wineURL = "https://appdb.winehq.org/objectManager.php?bIsQueue=false&bIsRejected=false&sClass=application&sTitle=Browse+Applications&iItemsPerPage=25&iPage=1&sOrderBy=appName&bAscending=true";
     String queryString;
+    String returnCount;
 
-    public searchWine(String query) {
+    public wineResultsCount(String query) {
         queryString = query;
-        Log.i("SCRAPE", "searchWine: " + queryString);
     }
 
     @Override
@@ -46,30 +51,34 @@ public class searchWine extends AsyncTask<String, String, String> {
                 .add("sFilterSubmit", "")
                 .build();
 
-        Log.i("SCRAPE", "formBody: " + formBody.toString());
-
         //build the request
         Request request = new Request.Builder()
                 .url(wineURL) // The URL to send the data to
                 .post(formBody)
                 .build();
 
-        Log.i("SCRAPE", "request: " + request.toString());
-
         //post and get response
-        Response response = null;
+        Response response;
+
+        //get web page document
+        Document document = null;
         try {
             response = client.newCall(request).execute();
+            document = Jsoup.parse(response.body().string(), wineURL);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //debugging logging responses
-        Log.i("SCRAPE", "response: " + response.message());
-        Log.i("SCRAPE", "response: " + response.body().toString());
-        Log.i("SCRAPE", "response: " + response.toString());
-        Log.i("SCRAPE", "response: " + response.cacheControl().toString());
-        return "";
+        Elements table = document.select("table[class=\"whq-table whq-table-full\"]"); //get table
+        Elements tbody = table.select("tbody"); //get table body
+
+        //log the number of results found
+        int count = 0;
+        for (Element element : tbody.select("tr")) {
+            count++;
+        }
+
+        return returnCount = String.valueOf(count);
     }
 
     @Override
