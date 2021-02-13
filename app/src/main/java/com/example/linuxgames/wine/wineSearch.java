@@ -16,11 +16,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class getWineUrl extends AsyncTask<String, String, String> {
+public class wineSearch extends AsyncTask<String, String, String> {
     final String wineURL = "https://appdb.winehq.org/objectManager.php?bIsQueue=false&bIsRejected=false&sClass=application&sTitle=Browse+Applications&iItemsPerPage=25&iPage=1&sOrderBy=appName&bAscending=true";
     String queryString;
 
-    public getWineUrl(String query) {
+    public wineSearch(String query) {
         queryString = query;
     }
 

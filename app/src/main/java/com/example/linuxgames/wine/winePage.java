@@ -13,11 +13,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class getWineRating extends AsyncTask<String, String, String> {
+public class winePage extends AsyncTask<String, String, String> {
     String url;
     String rating;
 
-    public getWineRating(String getUrl) {
+    public winePage(String getUrl) {
         url = getUrl;
     }
 
