@@ -240,7 +240,7 @@ public class gameDetails extends AppCompatActivity {
                     dateText.setText(document.select("div.date").text());
                     authorText.setText(document.select("div.dev_row").select("a").first().text());
                     //get image container
-                    String imageUrl = document.select("img.game_header_image_full").attr("src");
+                    String imageUrl = document.select("div.screenshot_holder").select("a.highlight_screenshot_link").attr("href");
                     Picasso.get().load(imageUrl).fit().centerCrop().into(backgroundImage);
                 } catch (Exception e) {
                     runOnUiThread(() -> log.append("\nError retrieving steam data..."));
