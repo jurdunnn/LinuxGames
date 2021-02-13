@@ -2,21 +2,17 @@ package com.example.linuxgames.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.linuxgames.R;
 import com.example.linuxgames.igdb.igdb;
-import com.example.linuxgames.wine.wineResultsCount;
+import com.example.linuxgames.wine.getWineRating;
+import com.example.linuxgames.wine.getWineUrl;
 
 import java.util.concurrent.ExecutionException;
-
-import jp.wasabeef.blurry.Blurry;
 
 public class gameDetails extends AppCompatActivity {
     TextView log;
@@ -50,32 +46,37 @@ public class gameDetails extends AppCompatActivity {
     //thread 2 background for searching for repositories of script applications to play windows games.
     public class Thread2 extends Thread {
         public void run() {
-            //Declare count
-            String count = null;
+
+            //Declare wine details
+            String wineUrl = null;
+            String wineRating = null;
 
             //get more refined search from idgb
             String wineQuery = title.split("\\(")[0];
-
+            //todo: if title is null then user original query
+            //todo: print rating with wine
             //try to get number of results from wine
             try {
-                count = new wineResultsCount(wineQuery).execute().get();//search wine
+                wineUrl = new getWineUrl(wineQuery).execute().get();//search wine
+                //if wine has found a likely url
+                if (wineUrl != null) {
+                    runOnUiThread(() -> log.append("\nWine - Yes"));
+                    wineRating = new getWineRating(wineUrl).execute().get();
+
+                    String finalWineRating = wineRating;
+                    runOnUiThread(() -> log.append("\nWine rating - " + finalWineRating));
+                } else {
+                    runOnUiThread(() -> log.append("\nWine - No"));
+                }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-            }
-
-            //inform user of wine results that have been found
-            //todo: print rating with wine
-            int finalCount = Integer.parseInt(count);
-            if(finalCount > 0) {
-                runOnUiThread(() -> log.append("\nWine - Yes"));
-            } else {
-                runOnUiThread(() -> log.append("\nWine - No"));
+                runOnUiThread(() -> log.append("\nUnable to access wine"));
             }
 
             //todo: search for proton
 
             //try
-                //new protonSearch(wineQuery).execute().get();
+            //new protonSearch(wineQuery).execute().get();
 
             //print rating with proton
         }
@@ -93,6 +94,10 @@ public class gameDetails extends AppCompatActivity {
                 titleAndUrl = new igdb(query).execute().get();
 
             } catch (ExecutionException | InterruptedException e) {
+                //inform user of error
+                runOnUiThread(() -> log.append("\nUnable to access igdb"));
+                //init titleandurl
+                titleAndUrl = query + "~unknown";
                 e.printStackTrace();
             }
 
@@ -102,6 +107,9 @@ public class gameDetails extends AppCompatActivity {
 
             //inform user that game has been found
             runOnUiThread(() -> log.append("\nFound: " + title));
+
+            //TODO: get the game data and set it to elements on screen
+            igdbGameData();
 
             //start thread2
             t2.start();
@@ -115,6 +123,9 @@ public class gameDetails extends AppCompatActivity {
 
             //hide progress bar
             runOnUiThread(() -> hideProgress());
+        }
+
+        private void igdbGameData() {
         }
     }
 

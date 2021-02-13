@@ -16,12 +16,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class wineResultsCount extends AsyncTask<String, String, String> {
+public class getWineUrl extends AsyncTask<String, String, String> {
     final String wineURL = "https://appdb.winehq.org/objectManager.php?bIsQueue=false&bIsRejected=false&sClass=application&sTitle=Browse+Applications&iItemsPerPage=25&iPage=1&sOrderBy=appName&bAscending=true";
     String queryString;
-    String returnCount;
 
-    public wineResultsCount(String query) {
+    public getWineUrl(String query) {
         queryString = query;
     }
 
@@ -32,7 +31,7 @@ public class wineResultsCount extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient searchClient = new OkHttpClient();
         //build the form body to post
         RequestBody formBody = new FormBody.Builder()
                 .add("iappVersion-ratingOp", "5")
@@ -58,27 +57,35 @@ public class wineResultsCount extends AsyncTask<String, String, String> {
                 .build();
 
         //post and get response
-        Response response;
+        Response searchResponse;
 
         //get web page document
-        Document document = null;
+        Document searchPage = null;
         try {
-            response = client.newCall(request).execute();
-            document = Jsoup.parse(response.body().string(), wineURL);
+            searchResponse = searchClient.newCall(request).execute();
+            searchPage = Jsoup.parse(searchResponse.body().string(), wineURL);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Elements table = document.select("table[class=\"whq-table whq-table-full\"]"); //get table
+        //get elements
+        Elements table = searchPage.select("table[class=\"whq-table whq-table-full\"]"); //get table
         Elements tbody = table.select("tbody"); //get table body
+        Elements tr = tbody.select("tr"); //get first table row
+        Elements td = tr.select("td"); //get first table column
+        Element a = td.select("a").first(); //get the link
 
-        //log the number of results found
-        int count = 0;
-        for (Element element : tbody.select("tr")) {
-            count++;
+        //convert to string if a url link has been found
+        String url = null;
+        if(a != null) {
+            url = a.toString();
+            url = url.substring(url.indexOf("https:"), url.indexOf("\">"));
+            url = url.replace("amp;", "");
         }
 
-        return returnCount = String.valueOf(count);
+        Log.i("wineGet", "url: " + url);
+
+        return url;
     }
 
     @Override
