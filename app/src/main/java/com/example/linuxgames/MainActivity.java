@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         //init search box
         searchBox = findViewById(R.id.searchBox);
-        
+
         //add listener for enter button
         searchBox.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
