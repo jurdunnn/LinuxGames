@@ -56,9 +56,8 @@ public class protonPage extends AsyncTask<String, String, String> {
         String json = document.text();
         json = json.split("\"tier\": \"")[1].split("\"")[0];
         Log.i("json", "proton: " + json);
-        //Log.i("HTMLUNIT", "html page - " + document.text());
 
-        return json;
+        return json.substring(0,1).toUpperCase() + json.substring(1);
     }
 
     @Override

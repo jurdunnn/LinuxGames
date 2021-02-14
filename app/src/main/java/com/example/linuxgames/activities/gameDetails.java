@@ -68,6 +68,9 @@ public class gameDetails extends AppCompatActivity {
     TextView protonProgressText;
     int protonProgress = 0;
     //Lutris
+    ProgressBar lutrisProgressBar;
+    TextView lutrisProgressText;
+    int lutrisProgress = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,10 @@ public class gameDetails extends AppCompatActivity {
         //proton progress
         protonProgressBar = findViewById(R.id.protonProgressBar);
         protonProgressText = findViewById(R.id.protonProgressText);
+
+        //lutris progress
+        lutrisProgressBar = findViewById(R.id.lutrisProgressBar);
+        lutrisProgressText = findViewById(R.id.lutrisProgressText);
 
         //init native linux bool
         linuxNative = false;
@@ -171,38 +178,40 @@ public class gameDetails extends AppCompatActivity {
     public class lutrisThread extends Thread {
         public void run() {
             try {
-                String lutrisUrl = new lutrisSearch(title).execute().get();//search wine
-                Log.i("lutris url", "LUTRIS URL" + lutrisUrl);
-                //if wine has found a likely url
+                //update progress
+                updateLutrisProgress(25);
+
+                //search lutris
+                String lutrisUrl = new lutrisSearch(title).execute().get();
+
+                //update progress
+                updateLutrisProgress(25);
+
+                //if lutris has found a likely url
                 if (lutrisUrl != null) {
+                    //get lutris ratings
                     lutrisRating = new lutrisPage(lutrisUrl).execute().get();
-                    //got the wine url update the progress bar
-                    //updateWineProgressBar(50);
 
-                    //local variable rating
-                    //String rating = new winePage(lutrisUrl).execute().get();
-
-                    //got the rating update progress bar
-                    //updateWineProgressBar(25);
-
-                    //global rating variable
-                    //wineRating = rating;
+                    //update progress
+                    updateLutrisProgress(50);
 
                     //prompt rating
-                    //runOnUiThread(() -> log.append("\nWine rating - " + wineRating));
-                    //runOnUiThread(() -> wineProgressText.setText(wineRating));
+                    runOnUiThread(() -> log.append("\nLutris rating - " + lutrisRating)); //terminal
+                    runOnUiThread(() -> lutrisProgressText.setText(lutrisRating)); //UI
                 } else {
+
                     //prompt did not find game page.
-                    //runOnUiThread(() -> log.append("\nWine - No"));
+                    runOnUiThread(() -> log.append("\nLutris - No"));
 
                     //indicate that the progress has halted.
-                    //wineProgress = 0;
-                    //updateWineProgressBar(0);
+                    lutrisProgress = 0;
+                    updateLutrisProgress(0);
                 }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
+
                 //prompt error with getting wine data.
-                //runOnUiThread(() -> log.append("\nUnable to access wine"));
+                runOnUiThread(() -> log.append("\nUnable to access lutris"));
             }
         }
     }
@@ -373,6 +382,7 @@ public class gameDetails extends AppCompatActivity {
         runOnUiThread(() -> wineProgressText.setText(wineProgressStr));
         wineProgressBar.setProgress(wineProgress);
     }
+
     private void updateProtonProgress(int progress) {
         protonProgress += progress;
         String protonProgressStr = protonProgress + "%";
@@ -380,4 +390,10 @@ public class gameDetails extends AppCompatActivity {
         protonProgressBar.setProgress(protonProgress);
     }
 
+    private void updateLutrisProgress(int progress) {
+        lutrisProgress += progress;
+        String lutrisProgressStr = lutrisProgress + "%";
+        runOnUiThread(() -> lutrisProgressText.setText(lutrisProgressStr));
+        lutrisProgressBar.setProgress(lutrisProgress);
+    }
 }

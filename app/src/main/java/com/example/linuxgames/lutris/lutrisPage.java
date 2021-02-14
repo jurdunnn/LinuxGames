@@ -55,17 +55,24 @@ public class lutrisPage extends AsyncTask<String, String, String> {
         for (Element element : methods) {
             count++;
         }
+
         Log.i("LUTRIS", "rating : " + count);
+
         switch (count) {
-            case 0:
-                return "Garbage";
             case 1:
-                return "Silver";
+                return "Bronze";
             case 2:
+                return "Silver";
+            case 3:
                 return "Gold";
-            default:
-                return "Platinum";
         }
+
+        if(count > 3) {
+            return "Platinum";
+        } else {
+            return "Garbage";
+        }
+
     }
 
     @Override

@@ -78,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/gameOnLinuxContainer"
+            android:id="@+id/lutrisContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -88,7 +88,7 @@
             app:layout_constraintTop_toBottomOf="@+id/protonContainer">
 
             <ProgressBar
-                android:id="@+id/golProgressBar"
+                android:id="@+id/lutrisProgressBar"
                 style="@style/CircularDeterminateProgressBar"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
@@ -100,12 +100,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/golText"
+                android:id="@+id/lutrisText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
-                android:text="GameOnLinux"
+                android:text="Lutris"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -113,22 +113,22 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/golNotes"
+                android:id="@+id/lutrisNotes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="@+id/golText"
-                app:layout_constraintTop_toBottomOf="@+id/golText" />
+                app:layout_constraintStart_toStartOf="@+id/lutrisText"
+                app:layout_constraintTop_toBottomOf="@+id/lutrisText" />
 
             <TextView
-                android:id="@+id/golProgressText"
+                android:id="@+id/lutrisProgressText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/golProgressBar"
-                app:layout_constraintEnd_toEndOf="@+id/golProgressBar"
-                app:layout_constraintStart_toStartOf="@+id/golProgressBar"
-                app:layout_constraintTop_toTopOf="@+id/golProgressBar" />
+                app:layout_constraintBottom_toBottomOf="@+id/lutrisProgressBar"
+                app:layout_constraintEnd_toEndOf="@+id/lutrisProgressBar"
+                app:layout_constraintStart_toStartOf="@+id/lutrisProgressBar"
+                app:layout_constraintTop_toTopOf="@+id/lutrisProgressBar" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
