@@ -3,6 +3,7 @@ package com.example.linuxgames.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 
 import com.example.linuxgames.R;
 import com.example.linuxgames.igdb.igdbSearch;
+import com.example.linuxgames.lutris.lutrisSearch;
+import com.example.linuxgames.lutris.lutrisPage;
+import com.example.linuxgames.proton.protonPage;
 import com.example.linuxgames.steam.steamSearch;
 import com.example.linuxgames.wine.winePage;
 import com.example.linuxgames.wine.wineSearch;
@@ -38,11 +42,12 @@ public class gameDetails extends AppCompatActivity {
     //igdb url
     String igdbPageUrl;
 
-    //steam url
+    //steam
     String steamPageUrl;
+    String steamAppId;
 
     //ratings
-    String wineRating, protonRating, playOnLinuxRating;
+    String wineRating, protonRating, lutrisRating;
 
     //native to linux check
     Boolean linuxNative;
@@ -50,6 +55,19 @@ public class gameDetails extends AppCompatActivity {
     //threads
     mainNetworkThread mainThread = new mainNetworkThread(); //gets the game database data
     wineThread wine = new wineThread(); //get rating from wine
+    protonThread proton = new protonThread(); //get rating from proton
+    lutrisThread lutrist = new lutrisThread(); //get rating from game on linux
+
+    //progress bars
+    //wine
+    ProgressBar wineProgressBar;
+    TextView wineProgressText;
+    int wineProgress = 0;
+    //proton
+    ProgressBar protonProgressBar;
+    TextView protonProgressText;
+    int protonProgress = 0;
+    //Lutris
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,19 +77,26 @@ public class gameDetails extends AppCompatActivity {
         //get log
         log = findViewById(R.id.logText);
 
+        //wine progress
+        wineProgressBar = findViewById(R.id.wineProgressBar);
+        wineProgressText = findViewById(R.id.wineProgressText);
+
+        //proton progress
+        protonProgressBar = findViewById(R.id.protonProgressBar);
+        protonProgressText = findViewById(R.id.protonProgressText);
+
         //init native linux bool
         linuxNative = false;
 
         //get extra
         query = getIntent().getStringExtra("query");
-        //runnable to being after view has been loaded
 
         //start thread1 - this begins the search for app data.
         mainThread.start();
 
     }
 
-    //thread 2 background for searching for repositories of script applications to play windows games.
+    //thread 2 for searching wine
     public class wineThread extends Thread {
         public void run() {
             //if the title contains a date, remove the date
@@ -83,17 +108,29 @@ public class gameDetails extends AppCompatActivity {
                 String wineUrl = new wineSearch(wineQuery).execute().get();//search wine
                 //if wine has found a likely url
                 if (wineUrl != null) {
+
+                    //got the wine url update the progress bar
+                    updateWineProgressBar(50);
+
                     //local variable rating
                     String rating = new winePage(wineUrl).execute().get();
+
+                    //got the rating update progress bar
+                    updateWineProgressBar(25);
 
                     //global rating variable
                     wineRating = rating;
 
                     //prompt rating
                     runOnUiThread(() -> log.append("\nWine rating - " + wineRating));
+                    runOnUiThread(() -> wineProgressText.setText(wineRating));
                 } else {
                     //prompt did not find game page.
                     runOnUiThread(() -> log.append("\nWine - No"));
+
+                    //indicate that the progress has halted.
+                    wineProgress = 0;
+                    updateWineProgressBar(0);
                 }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
@@ -103,12 +140,78 @@ public class gameDetails extends AppCompatActivity {
         }
     }
 
+    public class protonThread extends Thread {
+        public void run() {
+            try {
+                updateProtonProgress(25);
+                String rating = new protonPage(steamAppId).execute().get();//search proton
+
+                //if wine has found a likely url
+                if (rating != null) {
+                    protonRating = rating;
+                    updateProtonProgress(50);
+                    //prompt rating
+                    runOnUiThread(() -> log.append("\nProton rating - " + protonRating));
+                    updateProtonProgress(25);
+                    runOnUiThread(() -> protonProgressText.setText(protonRating));
+                } else {
+                    //prompt did not find game page.
+                    protonProgress = 0;
+                    updateProtonProgress(0);
+                    runOnUiThread(() -> log.append("\nProton - No"));
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+                //prompt error with getting wine data.
+                runOnUiThread(() -> log.append("\nUnable to access proton"));
+            }
+        }
+    }
+
+    public class lutrisThread extends Thread {
+        public void run() {
+            try {
+                String lutrisUrl = new lutrisSearch(title).execute().get();//search wine
+                Log.i("lutris url", "LUTRIS URL" + lutrisUrl);
+                //if wine has found a likely url
+                if (lutrisUrl != null) {
+                    lutrisRating = new lutrisPage(lutrisUrl).execute().get();
+                    //got the wine url update the progress bar
+                    //updateWineProgressBar(50);
+
+                    //local variable rating
+                    //String rating = new winePage(lutrisUrl).execute().get();
+
+                    //got the rating update progress bar
+                    //updateWineProgressBar(25);
+
+                    //global rating variable
+                    //wineRating = rating;
+
+                    //prompt rating
+                    //runOnUiThread(() -> log.append("\nWine rating - " + wineRating));
+                    //runOnUiThread(() -> wineProgressText.setText(wineRating));
+                } else {
+                    //prompt did not find game page.
+                    //runOnUiThread(() -> log.append("\nWine - No"));
+
+                    //indicate that the progress has halted.
+                    //wineProgress = 0;
+                    //updateWineProgressBar(0);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+                //prompt error with getting wine data.
+                //runOnUiThread(() -> log.append("\nUnable to access wine"));
+            }
+        }
+    }
+
     //thread 1 for found game data.
     public class mainNetworkThread extends Thread {
         Document document;
 
         public void run() {
-            //TODO: if native linux then stop thread 2.
             //inform user search is underway
             runOnUiThread(() -> log.append("\nSearching for: " + query));
 
@@ -117,7 +220,7 @@ public class gameDetails extends AppCompatActivity {
                 //search for game on steam and get url
                 steamPageUrl = new steamSearch(query).execute().get();
                 //if failed to get steam url use igdb instead
-                if(steamPageUrl == null) {
+                if (steamPageUrl == null) {
                     igdbPageUrl = new igdbSearch(query).execute().get();
                     runOnUiThread(() -> log.append("\nNo such game on steam..."));
                 }
@@ -130,16 +233,18 @@ public class gameDetails extends AppCompatActivity {
 
             //if steam url has not successfully been retrieved then try idgb
             //if that also failed, inform the user.
-            if(steamPageUrl != null) {
+            if (steamPageUrl != null) {
                 steamGameData(); //get game data from steam
 
                 //prompt found game
                 runOnUiThread(() -> log.append("\nFound: " + title));
 
                 //run threads if it is not a linux native
-                if(linuxNative.equals(false)) {
+                if (linuxNative.equals(false)) {
                     //PUT THREAD START IN HERE.
                     wine.start();
+                    proton.start();
+                    lutrist.start();
                 } else {
                     runOnUiThread(() -> log.append("\nNative Linux Game"));
                 }
@@ -148,16 +253,20 @@ public class gameDetails extends AppCompatActivity {
             } else if (igdbPageUrl != null) {
                 igdbGameData();
                 wine.start();
+                proton.start();
+                lutrist.start();
                 populateUIIgdb();
             } else {
                 runOnUiThread(() -> log.append("\nNo such game found anywhere!"));
             }
 
             //try to join the threads
-            if(steamPageUrl!=null || igdbPageUrl!=null) {
+            if (steamPageUrl != null || igdbPageUrl != null) {
                 //try to join thread 2
                 try {
                     wine.join();
+                    proton.join();
+                    lutrist.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -189,9 +298,13 @@ public class gameDetails extends AppCompatActivity {
 
             title = document.select("div.apphub_AppName").text();
 
-            if(document.select("div.sysreq_tabs").text().contains("Linux")) {
+            if (document.select("div.sysreq_tabs").text().contains("Linux")) {
                 linuxNative = true;
             }
+
+            //get app id
+            steamAppId = steamPageUrl.split("app/")[1].split("/")[0];
+            Log.i("steam", "steam app id " + steamAppId);
         }
 
         //get the game data from the igdb page
@@ -219,10 +332,11 @@ public class gameDetails extends AppCompatActivity {
         //populate the UI whilst the other threads are working
 
         //populate using idgb
-        private void populateUIIgdb() {}
+        private void populateUIIgdb() {
+        }
 
         //populate using steam
-        private void populateUISteam(){
+        private void populateUISteam() {
             //elements on screen
             TextView titleText = findViewById(R.id.titleText);
             TextView dateText = findViewById(R.id.dateText);
@@ -252,4 +366,18 @@ public class gameDetails extends AppCompatActivity {
         ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
     }
+
+    private void updateWineProgressBar(int progress) {
+        wineProgress += progress;
+        String wineProgressStr = wineProgress + "%";
+        runOnUiThread(() -> wineProgressText.setText(wineProgressStr));
+        wineProgressBar.setProgress(wineProgress);
+    }
+    private void updateProtonProgress(int progress) {
+        protonProgress += progress;
+        String protonProgressStr = protonProgress + "%";
+        runOnUiThread(() -> protonProgressText.setText(protonProgressStr));
+        protonProgressBar.setProgress(protonProgress);
+    }
+
 }
