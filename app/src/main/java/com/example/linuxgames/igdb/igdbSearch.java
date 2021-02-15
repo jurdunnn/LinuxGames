@@ -52,37 +52,43 @@ public class igdbSearch extends AsyncTask<String, String, String> {
             e.printStackTrace();
         }
 
-
+        Elements jsonElements = null;
         //grab elements
-        Elements jsonElements = document.getElementsByAttributeStarting("data-json");
-
+        try {
+            jsonElements = document.getElementsByAttributeStarting("data-json");
+        }
+        catch (RuntimeException runtimeException) {
+            Log.i("IGDB - Exception", "Error: possible network error");
+        }
+        
         //url
         String url = null;
 
         //if the a relevant game has been found.
-        if(jsonElements.size() > 0) {
-            //Elements to string
-            String json = jsonElements.toString();
+        if(jsonElements!=null) {
+            if(jsonElements.size() > 0) {
+                //Elements to string
+                String json = jsonElements.toString();
 
-            //clean up json
-            json = json.replace("&quot", "");
-            json = json.replace(";", "");
-            json = json.replace("<div data-json=\"", "");
-            json = json.replace(":", "");
+                //clean up json
+                json = json.replace("&quot", "");
+                json = json.replace(";", "");
+                json = json.replace("<div data-json=\"", "");
+                json = json.replace(":", "");
 
-            //extract the first element. Most relevant
-            json = json.substring(json.indexOf("{"), json.indexOf("}"));
+                //extract the first element. Most relevant
+                json = json.substring(json.indexOf("{"), json.indexOf("}"));
 
-            //split by url - url in array[0], url start from 0 to first comma
-            String[] splitJsonObject = json.split("url");
+                //split by url - url in array[0], url start from 0 to first comma
+                String[] splitJsonObject = json.split("url");
 
-            //start at 0, end at first comma
-            url = splitJsonObject[1].substring(0, splitJsonObject[1].indexOf(","));
+                //start at 0, end at first comma
+                url = splitJsonObject[1].substring(0, splitJsonObject[1].indexOf(","));
 
-            //make full url
-            url = "https://www.igdb.com" + url;
+                //make full url
+                url = "https://www.igdb.com" + url;
+            }
         }
-
         //return title and url
         return url;
     }

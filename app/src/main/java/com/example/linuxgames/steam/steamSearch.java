@@ -53,13 +53,20 @@ public class steamSearch extends AsyncTask<String, String, String> {
             e.printStackTrace();
         }
 
+        Elements searchResultContainer;
+        Element appid = null;
         //get search result container
-        Elements searchResultContainer = document.select("div#search_result_container");
-        Element appid = searchResultContainer.select("a").first();
+        try {
+            searchResultContainer = document.select("div#search_result_container");
+            appid = searchResultContainer.select("a").first();
+        } catch (RuntimeException runtimeException) {
+            Log.i("Exception", "error: possible network error.");
+        }
+
 
         //construct url
         String url = null;
-        if(appid != null) {
+        if (appid != null) {
             String appidStr = appid.toString();
             appidStr = appidStr.split("appid=\"")[1];
             appidStr = appidStr.split("\"")[0];

@@ -231,7 +231,7 @@ public class gameDetails extends AppCompatActivity {
                 //if failed to get steam url use igdb instead
                 if (steamPageUrl == null) {
                     igdbPageUrl = new igdbSearch(query).execute().get();
-                    runOnUiThread(() -> log.append("\nNo such game on steam..."));
+                    runOnUiThread(() -> log.append("\nNo such game on steam!"));
                 }
 
             } catch (ExecutionException | InterruptedException e) {
@@ -266,7 +266,10 @@ public class gameDetails extends AppCompatActivity {
                 lutrist.start();
                 populateUIIgdb();
             } else {
-                runOnUiThread(() -> log.append("\nNo such game found anywhere!"));
+                runOnUiThread(() -> log.append("\nNo such game anywhere!" +
+                        "\n\nPossible cause:" +
+                        "\nCheck internet connection" +
+                        "\nRefine search"));
             }
 
             //try to join the threads
