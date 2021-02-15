@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "447311591724",
+    "project_id": "linuxgames-4c9a9",
+    "storage_bucket": "linuxgames-4c9a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447311591724:android:58b56895ba04f42e281489",
+        "android_client_info": {
+          "package_name": "com.example.linuxgames"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447311591724-l3nv4seakj4mhd7536pto85uafnnlegp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjgIY96v2W0TZtO1K7thsHsLilMg9RGAE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447311591724-l3nv4seakj4mhd7536pto85uafnnlegp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

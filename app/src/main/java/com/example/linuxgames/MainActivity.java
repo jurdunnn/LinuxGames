@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.SearchView;
 
 import com.example.linuxgames.activities.gameDetails;
+import com.example.linuxgames.misc.updateSteamApi;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        new updateSteamApi();
 
         //init search box
         searchBox = findViewById(R.id.searchBox);
