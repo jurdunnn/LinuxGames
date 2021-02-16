@@ -48,16 +48,26 @@ public class lutrisPage extends AsyncTask<String, String, String> {
             e.printStackTrace();
         }
 
-        Elements installerList = document.select("div.installer-list");
-        Elements methods = installerList.select("ul");
+        //elements declared
+        Elements installerList = null;
+        Elements methods = null;
 
-        int count = 0;
-        for (Element element : methods) {
-            count++;
+        //if document has been found
+        if(document != null) {
+            installerList = document.select("div.installer-list");
+            methods = installerList.select("ul");
         }
 
-        Log.i("LUTRIS", "rating : " + count);
+        //count through number of different methods of installation
+        //found on lutris.
+        int count = 0;
+        if(methods != null) {
+            for (Element element : methods) {
+                count++;
+            }
+        }
 
+        //return string of the rating determined by the number of different methods.
         switch (count) {
             case 1:
                 return "Bronze";
@@ -72,7 +82,6 @@ public class lutrisPage extends AsyncTask<String, String, String> {
         } else {
             return "Garbage";
         }
-
     }
 
     @Override
