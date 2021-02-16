@@ -53,11 +53,22 @@ public class protonPage extends AsyncTask<String, String, String> {
         }
 
         //get search result container
-        String json = document.text();
-        json = json.split("\"tier\": \"")[1].split("\"")[0];
-        Log.i("json", "proton: " + json);
+        String json = null;
+        if(document!= null) {
+            try {
+                json = document.text();
+                json = json.split("\"tier\": \"")[1].split("\"")[0];
+                Log.i("json", "proton: " + json);
+            } catch (RuntimeException e) {
+                json = null;
+            }
+        }
 
-        return json.substring(0,1).toUpperCase() + json.substring(1);
+        if(json!=null) {
+            return json.substring(0,1).toUpperCase() + json.substring(1);
+        } else {
+            return "failed";
+        }
     }
 
     @Override
