@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LinuxGames">
-        <activity android:name=".activities.gameDetails"></activity>
+        <activity android:name=".gameDetails"
+            android:theme="@style/Theme.LinuxGames.SlidrActivityTheme"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

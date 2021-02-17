@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.EditText;
 
-import com.example.linuxgames.activities.gameDetails;
-
 public class MainActivity extends AppCompatActivity {
 
     private EditText searchBox;
@@ -28,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, gameDetails.class);
                 intent.putExtra("query", searchBox.getText().toString());
                 startActivity(intent);
+                overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
                 return true;
             }
             return false;

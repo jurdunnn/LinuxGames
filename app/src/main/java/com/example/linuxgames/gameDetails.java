@@ -1,4 +1,4 @@
-package com.example.linuxgames.activities;
+package com.example.linuxgames;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.linuxgames.R;
 import com.example.linuxgames.igdb.igdbSearch;
 import com.example.linuxgames.lutris.lutrisSearch;
 import com.example.linuxgames.lutris.lutrisPage;
@@ -17,6 +16,7 @@ import com.example.linuxgames.proton.protonPage;
 import com.example.linuxgames.steam.steamSearch;
 import com.example.linuxgames.wine.winePage;
 import com.example.linuxgames.wine.wineSearch;
+import com.r0adkll.slidr.Slidr;
 import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;
@@ -77,6 +77,8 @@ public class gameDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_details);
 
+        Slidr.attach(this);
+
         //get log
         log = findViewById(R.id.logText);
 
@@ -133,11 +135,12 @@ public class gameDetails extends AppCompatActivity {
                     runOnUiThread(() -> wineProgressText.setText(wineRating));
                 } else {
                     //prompt did not find game page.
-                    runOnUiThread(() -> log.append("\nWine - No"));
+                    runOnUiThread(() -> log.append("\nWine - Failed"));
 
                     //indicate that the progress has halted.
                     wineProgress = 0;
                     updateWineProgressBar(0);
+                    runOnUiThread(() -> wineProgressText.setText("Failed"));
                 }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
@@ -398,5 +401,12 @@ public class gameDetails extends AppCompatActivity {
         String lutrisProgressStr = lutrisProgress + "%";
         runOnUiThread(() -> lutrisProgressText.setText(lutrisProgressStr));
         lutrisProgressBar.setProgress(lutrisProgress);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
     }
 }
