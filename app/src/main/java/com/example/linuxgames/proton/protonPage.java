@@ -67,7 +67,7 @@ public class protonPage extends AsyncTask<String, String, String> {
         if(json!=null) {
             return json.substring(0,1).toUpperCase() + json.substring(1);
         } else {
-            return "Failed";
+            return "Garbage";
         }
     }
 

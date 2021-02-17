@@ -140,7 +140,7 @@ public class gameDetails extends AppCompatActivity {
                     //indicate that the progress has halted.
                     wineProgress = 0;
                     updateWineProgressBar(0);
-                    runOnUiThread(() -> wineProgressText.setText("Failed"));
+                    runOnUiThread(() -> wineProgressText.setText("Garbage"));
                 }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
