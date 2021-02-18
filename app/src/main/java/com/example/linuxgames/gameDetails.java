@@ -138,7 +138,7 @@ public class gameDetails extends AppCompatActivity {
                     runOnUiThread(() -> log.append("\nWine - Failed"));
 
                     //indicate that the progress has halted.
-                    wineProgress = 0;
+                    wineProgress = 100;
                     updateWineProgressBar(0);
                     runOnUiThread(() -> wineProgressText.setText("Garbage"));
                 }
@@ -166,9 +166,9 @@ public class gameDetails extends AppCompatActivity {
                     runOnUiThread(() -> protonProgressText.setText(protonRating));
                 } else {
                     //prompt did not find game page.
-                    protonProgress = 0;
+                    protonProgress = 100;
                     updateProtonProgress(0);
-                    runOnUiThread(() -> log.append("\nProton - No"));
+                    runOnUiThread(() -> protonProgressText.append("\nGarbage"));
                 }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
@@ -204,10 +204,10 @@ public class gameDetails extends AppCompatActivity {
                 } else {
 
                     //prompt did not find game page.
-                    runOnUiThread(() -> log.append("\nLutris - No"));
+                    runOnUiThread(() -> lutrisProgressText.append("\nGarbage"));
 
                     //indicate that the progress has halted.
-                    lutrisProgress = 0;
+                    lutrisProgress = 100;
                     updateLutrisProgress(0);
                 }
             } catch (ExecutionException | InterruptedException e) {
