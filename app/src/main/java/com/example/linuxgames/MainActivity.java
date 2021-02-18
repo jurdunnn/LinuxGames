@@ -1,11 +1,12 @@
 package com.example.linuxgames;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.EditText;
+import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,5 +32,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        ImageView clearSearchButton = findViewById(R.id.clearSearchButton);
+        clearSearchButton.setOnClickListener(v -> searchBox.setText(""));
     }
 }
