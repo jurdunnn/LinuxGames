@@ -320,7 +320,7 @@ public class gameDetails extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.finish();
+        finish();
         overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
     }
 

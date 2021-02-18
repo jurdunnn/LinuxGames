@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LinuxGames">
         <activity android:name=".gameDetails"
-            android:theme="@style/Theme.LinuxGames.SlidrActivityTheme"></activity>
+            android:theme="@style/Theme.LinuxGames.SlidrActivityTheme"
+            android:noHistory="true"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
