@@ -19,6 +19,7 @@ import com.example.linuxgames.wine.wineSearch;
 import com.r0adkll.slidr.Slidr;
 import com.squareup.picasso.Picasso;
 
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -72,13 +73,17 @@ public class gameDetails extends AppCompatActivity {
     TextView lutrisProgressText;
     int lutrisProgress = 0;
 
+    Document document;
+
+    steamPageDoc globalDocument;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_details);
 
         Slidr.attach(this);
-
+        steamPageUrl = getIntent().getStringExtra("steamurl");
         //get log
         log = findViewById(R.id.logText);
 
@@ -97,12 +102,43 @@ public class gameDetails extends AppCompatActivity {
         //init native linux bool
         linuxNative = false;
 
-        //get extra
-        query = getIntent().getStringExtra("query");
+        //get the game data document.
+        globalDocument = steamPageDoc.getInstance();
+        document = globalDocument.getDocument();
+
+        //if document is not null, populate UI fields with game data
+        if (document != null) {
+            populateUI();
+        }
 
         //start thread1 - this begins the search for app data.
         mainThread.start();
+    }
 
+    private void populateUI() {
+        title = document.select("div.apphub_AppName").text();
+
+        TextView titleText = findViewById(R.id.titleText);
+        titleText.setText(title);
+
+        TextView dateText = findViewById(R.id.dateText);
+        dateText.setText(document.select("div.date").text());
+
+        TextView authorText = findViewById(R.id.authorText);
+        authorText.setText(document.select("div.dev_row").select("a").first().text());
+
+        ImageView background = findViewById(R.id.loadingWallpaper);
+        String imageUrl = globalDocument.getDocument().select("div.screenshot_holder").select("a.highlight_screenshot_link").attr("href");
+        Log.i("Image", "populateUISteam: " + imageUrl);
+        Picasso.get().load(imageUrl).fit().centerCrop().into(background);
+
+        //game details - hidden
+        if (document.select("div.sysreq_tabs").text().contains("Linux")) {
+            linuxNative = true;
+        }
+
+        //get app id
+        steamAppId = steamPageUrl.split("app/")[1].split("/")[0];
     }
 
     //thread 2 for searching wine
@@ -221,37 +257,12 @@ public class gameDetails extends AppCompatActivity {
 
     //thread 1 for found game data.
     public class mainNetworkThread extends Thread {
-        Document document;
-
         public void run() {
-            //inform user search is underway
-            runOnUiThread(() -> log.append("\nSearching for: " + query));
-
-            //try and find a game matching the search query in steam
-            try {
-                //search for game on steam and get url
-                steamPageUrl = new steamSearch(query).execute().get();
-                //if failed to get steam url use igdb instead
-                if (steamPageUrl == null) {
-                    igdbPageUrl = new igdbSearch(query).execute().get();
-                    runOnUiThread(() -> log.append("\nNo such game on steam!"));
-                }
-
-            } catch (ExecutionException | InterruptedException e) {
-                //inform user of error
-                runOnUiThread(() -> log.append("\nUnable to access igdb"));
-                e.printStackTrace();
-            }
-
             //if steam url has not successfully been retrieved then try idgb
             //if that also failed, inform the user.
-            if (steamPageUrl != null) {
-                steamGameData(); //get game data from steam
 
-                //prompt found game
-                runOnUiThread(() -> log.append("\nFound: " + title));
-
-                //run threads if it is not a linux native
+            //run threads if it is not a linux native
+            if (steamPageUrl != null || igdbPageUrl != null) {
                 if (linuxNative.equals(false)) {
                     //PUT THREAD START IN HERE.
                     wine.start();
@@ -260,19 +271,6 @@ public class gameDetails extends AppCompatActivity {
                 } else {
                     runOnUiThread(() -> log.append("\nNative Linux Game"));
                 }
-
-                populateUISteam(); //populate steam UI
-            } else if (igdbPageUrl != null) {
-                igdbGameData();
-                wine.start();
-                proton.start();
-                lutrist.start();
-                populateUIIgdb();
-            } else {
-                runOnUiThread(() -> log.append("\nNo such game anywhere!" +
-                        "\n\nPossible cause:" +
-                        "\nCheck internet connection" +
-                        "\nRefine search"));
             }
 
             //try to join the threads
@@ -289,90 +287,6 @@ public class gameDetails extends AppCompatActivity {
 
             //hide progress bar
             runOnUiThread(gameDetails.this::hideProgress);
-        }
-
-        //get the game data from the steam page
-        private void steamGameData() {
-            OkHttpClient client = new OkHttpClient();
-            //build the request
-            Request request = new Request.Builder()
-                    .url(steamPageUrl) // The URL to send the data to
-                    .build();
-
-            //post and get response
-            Response response = null;
-
-            //get web page document
-            document = null;
-            try {
-                response = client.newCall(request).execute(); //execute to get response
-                document = Jsoup.parse(response.body().string(), steamPageUrl); //parse webpage into document
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            title = document.select("div.apphub_AppName").text();
-
-            if (document.select("div.sysreq_tabs").text().contains("Linux")) {
-                linuxNative = true;
-            }
-
-            //get app id
-            steamAppId = steamPageUrl.split("app/")[1].split("/")[0];
-            Log.i("steam", "steam app id " + steamAppId);
-        }
-
-        //get the game data from the igdb page
-        private void igdbGameData() {
-            OkHttpClient client = new OkHttpClient();
-            //build the request
-            Request request = new Request.Builder()
-                    .url(igdbPageUrl) // The URL to send the data to
-                    .build();
-
-            //post and get response
-            Response response = null;
-
-            //get web page document
-            document = null;
-            try {
-                response = client.newCall(request).execute(); //execute to get response
-                document = Jsoup.parse(response.body().string(), igdbPageUrl); //parse webpage into
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            title = document.title();
-        }
-
-        //populate the UI whilst the other threads are working
-
-        //populate using idgb
-        private void populateUIIgdb() {
-        }
-
-        //populate using steam
-        private void populateUISteam() {
-            //elements on screen
-            TextView titleText = findViewById(R.id.titleText);
-            TextView dateText = findViewById(R.id.dateText);
-            TextView authorText = findViewById(R.id.authorText);
-
-            ImageView backgroundImage = findViewById(R.id.loadingWallpaper);
-
-            //run changes in UI thread.
-            runOnUiThread(() -> {
-                //set title
-                try {
-                    titleText.setText(title);
-                    dateText.setText(document.select("div.date").text());
-                    authorText.setText(document.select("div.dev_row").select("a").first().text());
-                    //get image container
-                    String imageUrl = document.select("div.screenshot_holder").select("a.highlight_screenshot_link").attr("href");
-                    Picasso.get().load(imageUrl).fit().centerCrop().into(backgroundImage);
-                } catch (Exception e) {
-                    runOnUiThread(() -> log.append("\nError retrieving steam data..."));
-                }
-            });
         }
     }
 
@@ -408,5 +322,11 @@ public class gameDetails extends AppCompatActivity {
         super.onBackPressed();
         this.finish();
         overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 }
