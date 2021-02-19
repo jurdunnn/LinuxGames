@@ -1,4 +1,4 @@
- package com.example.linuxgames;
+package com.example.linuxgames;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -74,8 +74,6 @@ public class gameDetails extends AppCompatActivity {
     TextView lutrisProgressText;
     int lutrisProgress = 0;
 
-    Document document;
-
     steamPageDoc globalDocument;
 
     @Override
@@ -105,9 +103,8 @@ public class gameDetails extends AppCompatActivity {
 
         //get the game data document.
         globalDocument = steamPageDoc.getInstance();
-        document = globalDocument.getDocument();
 
-        if (document != null) {
+        if (globalDocument != null) {
             populateUI();
             mainThread.start();
         }
@@ -115,16 +112,16 @@ public class gameDetails extends AppCompatActivity {
 
     private void populateUI() {
         try {
-            title = document.select("div.apphub_AppName").text();
+            title = globalDocument.getDocument().select("div.apphub_AppName").text();
 
             TextView titleText = findViewById(R.id.titleText);
             titleText.setText(title);
 
             TextView dateText = findViewById(R.id.dateText);
-            dateText.setText(document.select("div.date").text());
+            dateText.setText(globalDocument.getDocument().select("div.date").text());
 
             TextView authorText = findViewById(R.id.authorText);
-            authorText.setText(document.select("div.dev_row").select("a").first().text());
+            authorText.setText(globalDocument.getDocument().select("div.dev_row").select("a").first().text());
 
             ImageView background = findViewById(R.id.loadingWallpaper);
             String imageUrl = globalDocument.getDocument().select("div.screenshot_holder").select("a.highlight_screenshot_link").attr("href");
@@ -132,7 +129,7 @@ public class gameDetails extends AppCompatActivity {
             Picasso.get().load(imageUrl).fit().centerCrop().into(background);
 
             //game details - hidden
-            if (document.select("div.sysreq_tabs").text().contains("Linux")) {
+            if (globalDocument.getDocument().select("div.sysreq_tabs").text().contains("Linux")) {
                 linuxNative = true;
             }
 
