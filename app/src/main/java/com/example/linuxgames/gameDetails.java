@@ -1,7 +1,5 @@
 package com.example.linuxgames;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,33 +8,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.linuxgames.igdb.igdbSearch;
-import com.example.linuxgames.lutris.lutrisSearch;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.linuxgames.lutris.lutrisPage;
+import com.example.linuxgames.lutris.lutrisSearch;
 import com.example.linuxgames.proton.protonPage;
-import com.example.linuxgames.steam.steamSearch;
 import com.example.linuxgames.wine.winePage;
 import com.example.linuxgames.wine.wineSearch;
 import com.r0adkll.slidr.Slidr;
 import com.squareup.picasso.Picasso;
 
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class gameDetails extends AppCompatActivity {
     //terminal log
     TextView log;
-
-    //user query
-    String query;
 
     //split refined game title
     String title;
