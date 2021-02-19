@@ -10,3 +10,4 @@ Gif recording of pre-release 0.5
 Version .5 also added a app icons!
 
 ![alt text](https://github.com/jurdunnn/LinuxGames/blob/master/app/src/main/res/mipmap-xxxhdpi/logo.png)
+![alt text](https://github.com/jurdunnn/LinuxGames/blob/master/app/src/main/res/mipmap-xxxhdpi/logo_foreground.png)
