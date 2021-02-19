@@ -16,10 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.linuxgames.misc.steamPageDoc;
 import com.example.linuxgames.steam.steamSearch;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

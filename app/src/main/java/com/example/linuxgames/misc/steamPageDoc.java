@@ -1,4 +1,4 @@
-package com.example.linuxgames;
+package com.example.linuxgames.misc;
 
 import org.jsoup.nodes.Document;
 

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.linuxgames.lutris.lutrisPage;
 import com.example.linuxgames.lutris.lutrisSearch;
+import com.example.linuxgames.misc.steamPageDoc;
 import com.example.linuxgames.proton.protonPage;
 import com.example.linuxgames.wine.winePage;
 import com.example.linuxgames.wine.wineSearch;
