@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.linuxgames.igdb.igdbSearch;
 import com.example.linuxgames.lutris.lutrisSearch;
@@ -113,29 +114,34 @@ public class gameDetails extends AppCompatActivity {
     }
 
     private void populateUI() {
-        title = document.select("div.apphub_AppName").text();
+        try {
+            title = document.select("div.apphub_AppName").text();
 
-        TextView titleText = findViewById(R.id.titleText);
-        titleText.setText(title);
+            TextView titleText = findViewById(R.id.titleText);
+            titleText.setText(title);
 
-        TextView dateText = findViewById(R.id.dateText);
-        dateText.setText(document.select("div.date").text());
+            TextView dateText = findViewById(R.id.dateText);
+            dateText.setText(document.select("div.date").text());
 
-        TextView authorText = findViewById(R.id.authorText);
-        authorText.setText(document.select("div.dev_row").select("a").first().text());
+            TextView authorText = findViewById(R.id.authorText);
+            authorText.setText(document.select("div.dev_row").select("a").first().text());
 
-        ImageView background = findViewById(R.id.loadingWallpaper);
-        String imageUrl = globalDocument.getDocument().select("div.screenshot_holder").select("a.highlight_screenshot_link").attr("href");
-        Log.i("Image", "populateUISteam: " + imageUrl);
-        Picasso.get().load(imageUrl).fit().centerCrop().into(background);
+            ImageView background = findViewById(R.id.loadingWallpaper);
+            String imageUrl = globalDocument.getDocument().select("div.screenshot_holder").select("a.highlight_screenshot_link").attr("href");
+            Log.i("Image", "populateUISteam: " + imageUrl);
+            Picasso.get().load(imageUrl).fit().centerCrop().into(background);
 
-        //game details - hidden
-        if (document.select("div.sysreq_tabs").text().contains("Linux")) {
-            linuxNative = true;
+            //game details - hidden
+            if (document.select("div.sysreq_tabs").text().contains("Linux")) {
+                linuxNative = true;
+            }
+
+            //get app id
+            steamAppId = steamPageUrl.split("app/")[1].split("/")[0];
+        } catch (RuntimeException e) {
+            Toast.makeText(this, "Age check error", Toast.LENGTH_SHORT).show();
+            finish();
         }
-
-        //get app id
-        steamAppId = steamPageUrl.split("app/")[1].split("/")[0];
     }
 
     //separate threads for different sites
