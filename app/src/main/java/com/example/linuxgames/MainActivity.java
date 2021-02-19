@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -33,9 +34,6 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends AppCompatActivity {
     String steamPageUrl;
     String query;
-
-    Document document;
-
 
     steamPageDoc globalDocument;
 
@@ -123,26 +121,30 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                OkHttpClient client1 = new OkHttpClient();
-                //build the request
-                Request request = new Request.Builder()
-                        .url(steamPageUrl) // The URL to send the data to
-                        .build();
+                if(steamPageUrl != null) {
+                    OkHttpClient client1 = new OkHttpClient();
+                    //build the request
+                    Request request = new Request.Builder()
+                            .url(steamPageUrl) // The URL to send the data to
+                            .build();
 
-                //post and get response
-                Response response = null;
+                    //post and get response
+                    Response response = null;
 
-                //get web page document
-                document = null;
-                try {
-                    response = client1.newCall(request).execute(); //execute to get response
-                    document = Jsoup.parse(response.body().string(), steamPageUrl); //parse webpage into document
-
-                    globalDocument.setDocument(document);
-                    runOnUiThread(() -> backgroundData.setValue("done"));
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    //get web page document
+                    globalDocument.setDocument(null);
+                    try {
+                        response = client1.newCall(request).execute(); //execute to get response
+                        globalDocument.setDocument(Jsoup.parse(response.body().string(), steamPageUrl));//parse webpage into document
+                        runOnUiThread(() -> backgroundData.setValue("done"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Game not found", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> loadingLayout.setVisibility(GONE));
                 }
+
             }).start();
             return "done";
         }
