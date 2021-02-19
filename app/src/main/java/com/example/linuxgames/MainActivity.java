@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     Document document;
 
+
     steamPageDoc globalDocument;
 
     MutableLiveData<String> backgroundData;
@@ -51,10 +52,10 @@ public class MainActivity extends AppCompatActivity {
         ImageView clearSearchButton = findViewById(R.id.clearSearchButton);
         loadingLayout = findViewById(R.id.loadingLayout);
 
+        backgroundData = new MutableLiveData<>();
+
         //get instance of global document
         globalDocument = steamPageDoc.getInstance();
-
-        backgroundData = new MutableLiveData<>();
 
         //add listener for enter button
         searchBox.setOnKeyListener((v, keyCode, event) -> {
@@ -62,24 +63,23 @@ public class MainActivity extends AppCompatActivity {
                 //get query text
                 query = searchBox.getText().toString();
 
-                //run network thread
                 new task().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-                //wait for variable change
-                backgroundData.observe(this, s -> {
-                    //start new activity
-                    Intent intent = new Intent(MainActivity.this, gameDetails.class);
-                    intent.putExtra("steamurl", steamPageUrl);
-
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
-                });
-
                 return true;
             }
             return false;
         });
 
+        //wait for background search to be complete before moving to new activity.
+        backgroundData.observe(this, s -> {
+            //start new activity
+            Intent intent = new Intent(MainActivity.this, gameDetails.class);
+            intent.putExtra("steamurl", steamPageUrl);
+
+            startActivity(intent);
+            overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+        });
+
+        //show or hide clear search button depending on searchBox text length
         searchBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //clear search field.
         clearSearchButton.setOnClickListener(v -> searchBox.setText(""));
     }
 

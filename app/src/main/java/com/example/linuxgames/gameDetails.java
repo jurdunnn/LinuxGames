@@ -1,4 +1,4 @@
-package com.example.linuxgames;
+ package com.example.linuxgames;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -106,13 +106,10 @@ public class gameDetails extends AppCompatActivity {
         globalDocument = steamPageDoc.getInstance();
         document = globalDocument.getDocument();
 
-        //if document is not null, populate UI fields with game data
         if (document != null) {
             populateUI();
+            mainThread.start();
         }
-
-        //start thread1 - this begins the search for app data.
-        mainThread.start();
     }
 
     private void populateUI() {
@@ -141,7 +138,7 @@ public class gameDetails extends AppCompatActivity {
         steamAppId = steamPageUrl.split("app/")[1].split("/")[0];
     }
 
-    //thread 2 for searching wine
+    //separate threads for different sites
     public class wineThread extends Thread {
         public void run() {
             //if the title contains a date, remove the date
