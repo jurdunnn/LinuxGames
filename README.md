@@ -7,4 +7,6 @@ Gif recording of pre-release 0.5
 
 ![alt text](https://github.com/jurdunnn/LinuxGames/blob/master/version%20.5%20release.gif)
 
+Version .5 also added a app icons!
 
+![alt text](https://github.com/jurdunnn/LinuxGames/blob/master/app/src/main/res/mipmap-xxxhdpi/logo.png)
