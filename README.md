@@ -5,6 +5,6 @@ Linux games is an android webscraping app. It searches for the specified game in
 
 Gif recording of pre-release 0.3
 
-![alt text](https://github.com/jurdunnn/LinuxGames/blob/master/WhatsApp-Video-2021-02-17-at-135.gif)
+![alt text](https://github.com/jurdunnn/LinuxGames/blob/master/version%20.5%20release.gif)
 
 
