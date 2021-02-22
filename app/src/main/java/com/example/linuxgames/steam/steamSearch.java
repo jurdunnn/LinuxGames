@@ -10,6 +10,9 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -30,14 +33,14 @@ public class steamSearch extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         OkHttpClient client = new OkHttpClient();
-
         //append url to include query
         queryURL = queryURL + queryString;
 
         Log.i("steam", "url: " + queryURL);
 
         //build the request
-        Request request = new Request.Builder()
+        Request request = new Request
+                .Builder()
                 .url(queryURL) // The URL to send the data to
                 .build();
 

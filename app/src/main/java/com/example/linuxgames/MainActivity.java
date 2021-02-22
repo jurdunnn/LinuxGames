@@ -24,6 +24,8 @@ import org.jsoup.Jsoup;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import okhttp3.Cookie;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -124,7 +126,12 @@ public class MainActivity extends AppCompatActivity {
                 if(steamPageUrl != null) {
                     OkHttpClient client1 = new OkHttpClient();
                     //build the request
+
+                    //build request with add cookies for age verification
                     Request request = new Request.Builder()
+                            .addHeader("Cookie", "wants_mature_content=1")
+                            .addHeader("Cookie", "lastagecheckage=1-0-1990")
+                            .addHeader("Cookie", "birthtime=628473601")
                             .url(steamPageUrl) // The URL to send the data to
                             .build();
 

@@ -123,7 +123,7 @@ public class gameDetails extends AppCompatActivity {
             //get app id
             steamAppId = steamPageUrl.split("app/")[1].split("/")[0];
         } catch (RuntimeException e) {
-            Toast.makeText(this, "Age check error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Steam age check block", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
