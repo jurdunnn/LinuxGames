@@ -11,9 +11,21 @@
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LinuxGames">
-        <activity android:name=".gameDetails"
-            android:theme="@style/Theme.LinuxGames.SlidrActivityTheme"
-            android:noHistory="true"/>
+        <activity android:name=".userActivity"></activity>
+        <activity
+            android:name=".tabbedActivity"
+            android:label="@string/title_activity_tabbed"
+            android:theme="@style/Theme.LinuxGames.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".gameDetails"
+            android:noHistory="true"
+            android:theme="@style/Theme.LinuxGames.SlidrActivityTheme" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
