@@ -61,14 +61,6 @@ public class searchFragment extends Fragment {
     ImageView clearSearchButton;
     TabLayout tabs;
 
-    public static searchFragment newInstance(int index) {
-        searchFragment fragment = new searchFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(ARG_SECTION_NUMBER, index);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
