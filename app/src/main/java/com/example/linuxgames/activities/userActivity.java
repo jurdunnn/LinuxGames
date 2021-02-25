@@ -1,8 +1,10 @@
-package com.example.linuxgames;
+package com.example.linuxgames.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.linuxgames.R;
 
 public class userActivity extends AppCompatActivity {
 

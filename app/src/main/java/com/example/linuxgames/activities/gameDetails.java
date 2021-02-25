@@ -1,4 +1,4 @@
-package com.example.linuxgames;
+package com.example.linuxgames.activities;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.linuxgames.R;
 import com.example.linuxgames.lutris.lutrisPage;
 import com.example.linuxgames.lutris.lutrisSearch;
 import com.example.linuxgames.misc.steamPageDoc;

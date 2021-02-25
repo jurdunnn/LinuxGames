@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -22,9 +21,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.linuxgames.MainActivity;
 import com.example.linuxgames.R;
-import com.example.linuxgames.gameDetails;
+import com.example.linuxgames.activities.gameDetails;
 import com.example.linuxgames.misc.steamPageDoc;
 import com.example.linuxgames.steam.steamSearch;
 import com.example.linuxgames.ui.main.PageViewModel;

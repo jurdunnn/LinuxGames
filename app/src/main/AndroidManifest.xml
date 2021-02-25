@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LinuxGames">
-        <activity android:name=".userActivity"></activity>
+        <activity android:name=".activities.registerActivity"></activity>
+        <activity android:name=".activities.userActivity" />
         <activity
             android:name=".tabbedActivity"
             android:label="@string/title_activity_tabbed"
@@ -23,10 +24,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".gameDetails"
+            android:name=".activities.gameDetails"
             android:noHistory="true"
             android:theme="@style/Theme.LinuxGames.SlidrActivityTheme" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

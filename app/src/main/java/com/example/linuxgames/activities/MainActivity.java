@@ -1,4 +1,4 @@
-package com.example.linuxgames;
+package com.example.linuxgames.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.linuxgames.R;
 import com.example.linuxgames.misc.steamPageDoc;
 import com.example.linuxgames.steam.steamSearch;
 

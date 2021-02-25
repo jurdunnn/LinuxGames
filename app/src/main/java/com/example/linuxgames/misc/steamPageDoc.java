@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 public class steamPageDoc {
     private Document document;
 
-    private static steamPageDoc instance = new steamPageDoc();
+    private static final steamPageDoc instance = new steamPageDoc();
 
     steamPageDoc() {}
 

@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.linuxgames.R;
 import com.example.linuxgames.ui.main.fragments.searchFragment;
 import com.example.linuxgames.ui.main.fragments.statisticsFragment;
-import com.example.linuxgames.ui.main.fragments.userFragment;
+import com.example.linuxgames.ui.main.fragments.loginFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new userFragment();
+                return new loginFragment();
             case 1:
                 return new searchFragment();
             case 2:
