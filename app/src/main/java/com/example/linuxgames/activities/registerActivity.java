@@ -1,15 +1,25 @@
 package com.example.linuxgames.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.linuxgames.R;
+import com.example.linuxgames.tabbedActivity;
+import com.example.linuxgames.ui.main.fragments.loginFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.r0adkll.slidr.Slidr;
 
 public class registerActivity extends AppCompatActivity {
@@ -19,11 +29,15 @@ public class registerActivity extends AppCompatActivity {
     MaterialCardView emailCard, usernameCard, steamCard, password1Card, password2Card;
     Button createAccountButton;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        //Firebase
+        mAuth = FirebaseAuth.getInstance();
 
         //email
         emailIcon = findViewById(R.id.registerEmailIcon);
@@ -106,12 +120,7 @@ public class registerActivity extends AppCompatActivity {
         });
 
         createAccountButton = findViewById(R.id.registerButton);
-        createAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        createAccountButton.setOnClickListener(v -> registerAccount());
     }
 
     @Override
@@ -119,5 +128,66 @@ public class registerActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
         overridePendingTransition(R.anim.right_slide_in, R.anim.left_slide_out);
+    }
+
+    private void registerAccount() {
+        if(checkEmail() && checkUsername() && checkPassword()) {
+            Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
+            //firebase register
+
+            mAuth.createUserWithEmailAndPassword(emailText.getText().toString(), password1Text.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()) {
+                        Log.i("registerAccount", "onComplete: success");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(registerActivity.this, "Welcome!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Log.i("registerAccount", "onComplete: failure", task.getException());
+                        Toast.makeText(registerActivity.this, "Autentication failed.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+    }
+
+    private Boolean checkEmail(){
+        String email = emailText.getText().toString();
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        Log.i("registerAccount", "checkEmail: " + email.matches(regex));
+
+        if(email.matches(regex)) {
+            return true;
+        } else {
+            Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    private Boolean checkUsername(){
+        String username = usernameText.getText().toString();
+        String regex = "^[A-Za-z]\\w{5,29}$";
+        Log.i("registerAccount", "checkUsername: " + username.matches(regex));
+
+        if(username.matches(regex)) {
+            return true;
+        } else {
+            Toast.makeText(this, "Invalid username format", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    private Boolean checkPassword() {
+        String password1 = password1Text.getText().toString();
+        String password2 = password2Text.getText().toString();
+
+        if(password1.equals(password2)) {
+            return true;
+        } else {
+            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

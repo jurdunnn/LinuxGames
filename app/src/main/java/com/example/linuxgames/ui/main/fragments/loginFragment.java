@@ -3,6 +3,7 @@ package com.example.linuxgames.ui.main.fragments;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +33,10 @@ public class loginFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
 
-    private Boolean loggedIn = false;
-
     //views
     ImageView emailIcon, passwordIcon;
     EditText emailText, passwordText;
+    TextView usernameText;
     MaterialCardView emailCard, passwordCard;
 
     TextView signupButton;
@@ -52,22 +52,19 @@ public class loginFragment extends Fragment {
         }
 
         pageViewModel.setIndex(index);
-
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() == null) {
-            loggedIn = false;
-        } else {
-            loggedIn = true;
-            user = mAuth.getCurrentUser();
-        }
+        user = mAuth.getCurrentUser();
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(loggedIn.equals(false)) {
-
+        if(user != null) {
+            usernameText = getActivity().findViewById(R.id.usernameText);
+            String welcomeMessage = "Welcome " + user.getDisplayName();
+            usernameText.setText(welcomeMessage);
+        } else {
             //email
             emailIcon = getActivity().findViewById(R.id.loginEmailIcon);
             emailText = getActivity().findViewById(R.id.loginEmailText);
@@ -107,9 +104,6 @@ public class loginFragment extends Fragment {
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.left_slide_in, R.anim.right_slide_out);
             });
-
-        } else {
-
         }
     }
 
@@ -117,10 +111,16 @@ public class loginFragment extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        if (loggedIn.equals(false)) {
-            return inflater.inflate(R.layout.activity_login, container, false);
-        } else {
+        if (user != null) {
             return inflater.inflate(R.layout.activity_user, container, false);
+        } else {
+            return inflater.inflate(R.layout.activity_login, container, false);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        user = mAuth.getCurrentUser();
     }
 }

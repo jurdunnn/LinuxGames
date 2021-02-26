@@ -32,5 +32,4 @@ public class tabbedActivity extends AppCompatActivity {
         //set the search page as current page
         viewPager.setCurrentItem(1);
     }
-
 }
