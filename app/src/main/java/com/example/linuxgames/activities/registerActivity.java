@@ -1,18 +1,16 @@
 package com.example.linuxgames.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.linuxgames.R;
-import com.example.linuxgames.tabbedActivity;
 import com.example.linuxgames.ui.main.fragments.loginFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -20,7 +18,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.r0adkll.slidr.Slidr;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class registerActivity extends AppCompatActivity {
 
@@ -44,7 +42,7 @@ public class registerActivity extends AppCompatActivity {
         emailText = findViewById(R.id.registerEmailText);
         emailCard = findViewById(R.id.registerEmailCard);
         emailText.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+            if (hasFocus) {
                 emailIcon.setImageResource(R.drawable.ic_baseline_mail_outline_focused);
                 emailText.setTextColor(getResources().getColor(R.color.design_default_color_primary_dark));
                 emailCard.setStrokeColor(getResources().getColor(R.color.design_default_color_primary_dark));
@@ -60,7 +58,7 @@ public class registerActivity extends AppCompatActivity {
         usernameText = findViewById(R.id.registerUsernameText);
         usernameCard = findViewById(R.id.registerUsernameCard);
         usernameText.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+            if (hasFocus) {
                 usernameIcon.setImageResource(R.drawable.ic_baseline_person_outline_focused);
                 usernameText.setTextColor(getResources().getColor(R.color.design_default_color_primary_dark));
                 usernameCard.setStrokeColor(getResources().getColor(R.color.design_default_color_primary_dark));
@@ -76,7 +74,7 @@ public class registerActivity extends AppCompatActivity {
         steamText = findViewById(R.id.registerSteamIDText);
         steamCard = findViewById(R.id.registerSteamIDCard);
         steamText.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+            if (hasFocus) {
                 steamIcon.setImageResource(R.drawable.ic_baseline_steam_focused);
                 steamText.setTextColor(getResources().getColor(R.color.design_default_color_primary_dark));
                 steamCard.setStrokeColor(getResources().getColor(R.color.design_default_color_primary_dark));
@@ -92,7 +90,7 @@ public class registerActivity extends AppCompatActivity {
         password1Text = findViewById(R.id.registerPasswordText);
         password1Card = findViewById(R.id.registerPasswordCard);
         password1Text.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+            if (hasFocus) {
                 password1Icon.setImageResource(R.drawable.ic_baseline_lock_open_focused);
                 password1Text.setTextColor(getResources().getColor(R.color.design_default_color_primary_dark));
                 password1Card.setStrokeColor(getResources().getColor(R.color.design_default_color_primary_dark));
@@ -108,7 +106,7 @@ public class registerActivity extends AppCompatActivity {
         password2Text = findViewById(R.id.registerConfirmPasswordText);
         password2Card = findViewById(R.id.registerConfirmPasswordCard);
         password2Text.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+            if (hasFocus) {
                 password2Icon.setImageResource(R.drawable.ic_baseline_lock_open_focused);
                 password2Text.setTextColor(getResources().getColor(R.color.design_default_color_primary_dark));
                 password2Card.setStrokeColor(getResources().getColor(R.color.design_default_color_primary_dark));
@@ -131,34 +129,52 @@ public class registerActivity extends AppCompatActivity {
     }
 
     private void registerAccount() {
-        if(checkEmail() && checkUsername() && checkPassword()) {
-            Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
+        if (checkEmail() && checkUsername() && checkPassword()) {
             //firebase register
 
-            mAuth.createUserWithEmailAndPassword(emailText.getText().toString(), password1Text.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()) {
-                        Log.i("registerAccount", "onComplete: success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(registerActivity.this, "Welcome!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.i("registerAccount", "onComplete: failure", task.getException());
-                        Toast.makeText(registerActivity.this, "Autentication failed.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            mAuth.createUserWithEmailAndPassword(emailText.getText().toString(), password1Text.getText().toString())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Log.i("registerAccount", "onComplete: success");
+                                //get user
+                                FirebaseUser user = mAuth.getCurrentUser();
+
+                                //build user profile
+                                UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(
+                                                usernameText.getText().toString()
+                                                        + "#"
+                                                        + steamText.getText().toString())
+                                        .build();
+
+                                //update the users profile in firebase
+                                user.updateProfile(profileChangeRequest).addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()) {
+                                        Log.i("registerAccount", "update Profile: " + usernameText.getText().toString());
+                                    }
+                                });
+
+                                //finish
+                                Toast.makeText(registerActivity.this, "Welcome!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                Log.i("registerAccount", "onComplete: failure", task.getException());
+                                Toast.makeText(registerActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         }
 
     }
 
-    private Boolean checkEmail(){
+    private Boolean checkEmail() {
         String email = emailText.getText().toString();
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         Log.i("registerAccount", "checkEmail: " + email.matches(regex));
 
-        if(email.matches(regex)) {
+        if (email.matches(regex)) {
             return true;
         } else {
             Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show();
@@ -166,12 +182,12 @@ public class registerActivity extends AppCompatActivity {
         }
     }
 
-    private Boolean checkUsername(){
+    private Boolean checkUsername() {
         String username = usernameText.getText().toString();
         String regex = "^[A-Za-z]\\w{5,29}$";
         Log.i("registerAccount", "checkUsername: " + username.matches(regex));
 
-        if(username.matches(regex)) {
+        if (username.matches(regex)) {
             return true;
         } else {
             Toast.makeText(this, "Invalid username format", Toast.LENGTH_SHORT).show();
@@ -183,7 +199,7 @@ public class registerActivity extends AppCompatActivity {
         String password1 = password1Text.getText().toString();
         String password2 = password2Text.getText().toString();
 
-        if(password1.equals(password2)) {
+        if (password1.equals(password2)) {
             return true;
         } else {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
