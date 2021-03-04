@@ -3,6 +3,8 @@ package com.example.linuxgames.ui.main.fragments;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -40,10 +43,10 @@ public class loginFragment extends Fragment {
     private FirebaseUser user;
 
     //views
-    ImageView emailIcon, passwordIcon;
+    ImageView emailIcon, passwordIcon, usernameIcon, steamIDIcon;
     EditText emailText, passwordText;
-    TextView usernameText;
-    MaterialCardView emailCard, passwordCard;
+    TextView usernameText, steamIDText;
+    MaterialCardView emailCard, passwordCard, usernameCard, steamIDcard;
 
     TextView signupButton;
     Button loginButton;
@@ -68,9 +71,7 @@ public class loginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (user != null) {
-            usernameText = getActivity().findViewById(R.id.usernameText);
-            String welcomeMessage = "Welcome " + user.getDisplayName();
-            usernameText.setText(welcomeMessage);
+            populateUI();
         } else {
             //email
             emailIcon = getActivity().findViewById(R.id.loginEmailIcon);
@@ -133,6 +134,116 @@ public class loginFragment extends Fragment {
             user = mAuth.getCurrentUser();
             getActivity().recreate();
         }).addOnFailureListener(getActivity(), e -> Toast.makeText(getActivity(), "username or password incorrect", Toast.LENGTH_SHORT).show());
+    }
+
+    private void populateUI() {
+        populateChangeAccountInformation();
+        populateSteamProton();
+    }
+
+    private void populateChangeAccountInformation() {
+        Button userConfirmChanges = getActivity().findViewById(R.id.userChangeButton);
+
+        usernameText = getActivity().findViewById(R.id.userUsernameText);
+        steamIDText = getActivity().findViewById(R.id.userSteamText);
+
+        String username = user.getDisplayName().split("#")[0];
+        String steamID = user.getDisplayName().split("#")[1];
+
+        String steamURL = "https://steamcommunity.com/id/" + steamID;
+        usernameText.setText(username);
+        steamIDText.setText(steamURL);
+
+        usernameCard = getActivity().findViewById(R.id.userUsernameCard);
+        steamIDcard = getActivity().findViewById(R.id.userSteamCard);
+
+        usernameIcon = getActivity().findViewById(R.id.userUsernameImage);
+        steamIDIcon = getActivity().findViewById(R.id.userSteamImage);
+
+        usernameText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                usernameIcon.setImageResource(R.drawable.ic_baseline_person_outline_focused);
+                usernameText.setTextColor(getResources().getColor(R.color.design_default_color_primary_dark));
+                usernameCard.setStrokeColor(getResources().getColor(R.color.design_default_color_primary_dark));
+            } else {
+                usernameIcon.setImageResource(R.drawable.ic_baseline_person_outline_24);
+                usernameText.setTextColor(getResources().getColor(R.color.disabled_color));
+                usernameCard.setStrokeColor(getResources().getColor(R.color.disabled_color));
+            }
+        });
+
+        steamIDText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                steamIDIcon.setImageResource(R.drawable.ic_baseline_steam_focused);
+                steamIDText.setTextColor(getResources().getColor(R.color.design_default_color_primary_dark));
+                steamIDcard.setStrokeColor(getResources().getColor(R.color.design_default_color_primary_dark));
+            } else {
+                steamIDIcon.setImageResource(R.drawable.ic_baseline_steam_24);
+                steamIDText.setTextColor(getResources().getColor(R.color.disabled_color));
+                steamIDcard.setStrokeColor(getResources().getColor(R.color.disabled_color));
+            }
+        });
+
+        usernameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                userConfirmChanges.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        steamIDText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                userConfirmChanges.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        userConfirmChanges.setOnClickListener(v -> {
+            //do stuff
+        });
+
+        TextView accountInformationTextView = getActivity().findViewById(R.id.accountinformationText);
+        ConstraintLayout accountInformationView = getActivity().findViewById(R.id.accountInformationContainer);
+
+        accountInformationTextView.setOnClickListener(v -> {
+            if(accountInformationView.getVisibility() == View.VISIBLE) {
+                accountInformationView.setVisibility(View.GONE);
+            } else {
+                accountInformationView.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void populateSteamProton() {
+        TextView steamProtonTextView = getActivity().findViewById(R.id.steamProtonText);
+        ConstraintLayout steamProtonView = getActivity().findViewById(R.id.steamProtonContainer);
+
+        steamProtonTextView.setOnClickListener(v -> {
+            if(steamProtonView.getVisibility() == View.VISIBLE) {
+                steamProtonView.setVisibility(View.GONE);
+            } else {
+                steamProtonView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
